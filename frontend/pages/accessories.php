@@ -84,7 +84,7 @@ if ($conn->connect_error) {
     <main class="full-block">
     <section class="clothes-accessories full-block">
         <div class="container clothes-accessories-content">
-          <form class="clothes-accessories-form">
+        <form class="clothes-accessories-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <div class="clothes-accessories-group">
               <label for="search">Search:</label>
               <input id="search" type="text" placeholder="Search" name="search"  />
@@ -99,12 +99,20 @@ if ($conn->connect_error) {
                 <input type="checkbox" name="category" value="women"> Women
               </label>
               <label>
-                <input type="checkbox" name="category" value="accessories"> Accessories
+                <input type="checkbox" name="category" value="kids"> Kids
               </label>
             </div>
             <div class="clothes-accessories-group">
               <label for="price">Sort by price</label>
-              <input type="range" id="price" name="price" min="0" max="100" step="10">
+              <input type="range" id="price" name="price" min="0" max="1000" step="10" onchange="showPriceValue(this.value)">
+              <span id="priceValue"></span>
+
+              <script>
+                function showPriceValue(value) {
+                  var priceValueElement = document.getElementById("priceValue");
+                  priceValueElement.textContent = value;
+                }
+              </script>
             </div>
           </form>
       </div>
@@ -112,24 +120,100 @@ if ($conn->connect_error) {
     <section class="products-section products-accessories full-block" id="on-sale">
         <div class="container">
           <div class="grid-container" id="accessories_grid">
-            <?php
-                  require_once 'database.php';
-                  $queryForAccessories = "SELECT *
-                  FROM product
-                  WHERE type = 'accessories'
-                  ORDER BY times_sold DESC;";
-                  
+                       
+          <?php
 
-                  $result1 = $conn->query($queryForAccessories);
-                  if ($result1) {
-                      // Render the results for each query
-                      renderResults($result1, "accessories_grid");
-                  } else {
-                      // Handle the case when the queries fail
-                      echo "Error retrieving products: " . $conn->error;
-                  } 
-                $conn->close();
-                ?>
+            function renderResults3($result, $sectionName)
+            {
+                if ($result) {
+                    // Fetch the products as an associative array
+                    $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                    // Process the products
+                    foreach ($products as $product) {
+                        // Access the product attributes
+                        $productId = $product['idproduct'];
+                        $productName = $product['name'];
+                        $productPrice = $product['price'];
+                        $productImage = $product['imagepath'];
+                        $productCategory = $product['category'];
+                        $productDesc = $product['description'];
+
+                        // Do something with the product data
+                        echo "<script src='jsfunctions/additems.js'></script>";
+                        echo "<script>";
+                        echo "additem('$productId', '$sectionName', '$productName', '$productDesc', '$productCategory', '$productPrice', '../$productImage');";
+                        echo "</script>";
+                    }
+                } else {
+                    // Handle the case when the query fails
+                    echo "Error retrieving products: " . mysqli_error($mysqli);
+                }
+            }
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // Check if the form is submitted
+
+                // Retrieve the form input values
+                $searchKeyword = $_POST['search'] ?? '';
+                $selectedCategories = $_POST['category'] ?? [];
+                $priceRange = $_POST['price'] ?? '';
+
+              // Prepare the SQL query
+              $queryForClothes = "SELECT *
+              FROM product
+              WHERE type = 'accessories'";
+              // Add conditions based on the form input values
+              if (!empty($searchKeyword)) {
+              $queryForClothes .= " AND (name LIKE '%$searchKeyword%' OR description LIKE '%$searchKeyword%')";
+              }
+
+              if (!empty($selectedCategories)) {
+                // Convert the selected categories into an array
+                $selectedCategories = (array) $selectedCategories;
+
+                // Map the categories to the condition strings
+                $categoryConditions = implode(" OR ", array_map(function ($category) {
+                    return "category = '$category'";
+                }, $selectedCategories));
+
+                $queryForClothes .= " AND ($categoryConditions)";
+            }
+
+              if (!empty($priceRange)) {
+              $queryForClothes .= " AND price < $priceRange";
+              }
+
+              $queryForClothes .= " ORDER BY times_sold DESC";
+                // Execute the query
+                $result = $conn->query($queryForClothes);
+                // Render the results
+                renderResults3($result, "accessories_grid");
+
+            }else{
+              require_once 'database.php';
+                      // Prepare the SQL query
+                      $queryForClothes = "SELECT *
+                      FROM product
+                      WHERE type = 'accessories'
+                      ORDER BY times_sold DESC;";
+
+                      
+
+                      $result1 = $conn->query($queryForClothes);
+                      if ($result1) {
+                        echo '<script>';
+                        echo 'clothesGrid = document.getElementById("accessories_grid").innerHTML = "";';
+                        echo '</script>';
+                          renderResults($result1, "accessories_grid");
+                      } else {
+                          // Handle the case when the queries fail
+                          echo "Error retrieving products: " . $conn->error;
+                      } 
+            }
+            $conn->close();
+
+            ?>
           </div>                            
           </div>
         </div>
