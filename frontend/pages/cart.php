@@ -56,6 +56,12 @@ require_once 'database.php';
       </div>
     </header>
     <main class="full-block">
+    <section class="products-section products-accessories full-block" id="on-sale">
+        <div class="container">
+          <div class="">
+            <a href="checkout.php">Proceed to checkout</a>
+        </div>
+      </section>
       <section class="products-section products-accessories full-block" id="on-sale">
         <div class="container">
           <div class="grid-container" id="cart_grid">

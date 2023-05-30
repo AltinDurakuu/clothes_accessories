@@ -47,6 +47,13 @@ function additem(productID, productSection, productName, productDesc, productCat
       var products = JSON.parse(localStorage.getItem('productData')) || [];
       products.push(productHTML);
       localStorage.setItem('productData', JSON.stringify(products));
+
+      var productId = productItem.id;
+
+      // Example using localStorage:
+      var productIds = JSON.parse(localStorage.getItem('productIds')) || [];
+      productIds.push(productId);
+      localStorage.setItem('productIds', JSON.stringify(productIds));
     });
   });
 }

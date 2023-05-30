@@ -31,9 +31,11 @@ $(document).ready(function () {
     }
   }
 
-  $(document).on("click", ".add-to-cart", function() {
+  $(document).on("click", ".add-to-cart", function(event) {
+    event.preventDefault();
+
     var $productItem = $(this).closest(".product-item");
-  
+
     // Find the index of the product item
     var itemIndex = $productItem.index();
   
