@@ -58,9 +58,33 @@ require_once 'database.php';
     <main class="full-block">
     <section class="products-section products-accessories full-block" id="on-sale">
         <div class="container">
-          <div class="">
-            <a href="checkout.php">Proceed to checkout</a>
-        </div>
+            <div class="form" id="proceed-to-checkout">
+               <form id="checkout-form" action="checkout.php" method="post">
+                 <input type="hidden" id="product-ids" name="product_ids" value="">
+                 <button type="submit" id="checkout-button">Go to checkout</button>
+                 </form>
+            </div>
+          </div>
+
+
+
+<script>
+  // Add event listener to the "Go to checkout" button
+  document.getElementById('checkout-button').addEventListener('click', function(event) {
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Retrieve product IDs from localStorage
+    var productIds = localStorage.getItem('productIds');
+
+    // Set the value of the hidden input field
+    document.getElementById('product-ids').value = productIds;
+
+    // Submit the form
+    document.getElementById('checkout-form').submit();
+  });
+</script>
+
       </section>
       <section class="products-section products-accessories full-block" id="on-sale">
         <div class="container">

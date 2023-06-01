@@ -33,9 +33,12 @@ $(document).ready(function () {
 
   $(document).on("click", ".add-to-cart", function(event) {
     event.preventDefault();
-
+  
     var $productItem = $(this).closest(".product-item");
-
+  
+    // Get the product ID
+    var productId = $productItem.attr("id");
+  
     // Find the index of the product item
     var itemIndex = $productItem.index();
   
@@ -47,5 +50,14 @@ $(document).ready(function () {
   
     // Update the modified products array in the localStorage
     localStorage.setItem("productData", JSON.stringify(products));
+  
+    // Retrieve the productIds array from localStorage
+    var productIds = JSON.parse(localStorage.getItem("productIds")) || [];
+  
+    // Remove the corresponding productId from the productIds array
+    productIds.splice(itemIndex, 1);
+  
+    // Update the modified productIds array in localStorage
+    localStorage.setItem("productIds", JSON.stringify(productIds));
   });
 });
