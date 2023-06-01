@@ -15,6 +15,7 @@ if ($conn->connect_error) {
 }
 
 $totalAmount = 0;
+$productRows = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve the product IDs from localStorage
@@ -41,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->fetch();
 
                 // Process the retrieved data
-                echo "Product Name: $name, Price: $$price<br>";
+                $productRows .= "<tr><td>$name</td><td>$$price</td></tr>";
 
                 // Calculate the total amount
                 $totalAmount += $price;
@@ -52,9 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Close the statement
         $stmt->close();
-
-        // Display the total amount
-        echo "Total Amount: $$totalAmount";
     } else {
         echo "No product IDs found.";
     }
@@ -70,11 +68,76 @@ if ($totalAmount > 0) {
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Pay with PayPal</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 20px;
+                }
+
+                .container {
+                    max-width: 400px;
+                    margin: 0 auto;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                    text-align: center;
+                }
+
+                h1 {
+                    font-size: 24px;
+                    margin-bottom: 20px;
+                }
+
+                #paypal-button-container {
+                    margin-top: 30px;
+                }
+
+                .note {
+                    font-size: 14px;
+                    margin-top: 20px;
+                    color: #888;
+                }
+
+                .note a {
+                    color: #0366d6;
+                    text-decoration: none;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                }
+
+                th {
+                    background-color: #f2f2f2;
+                }
+            </style>
             <!-- Include the PayPal JavaScript SDK -->
             <script src="https://www.paypal.com/sdk/js?client-id=AT6GZrfq-IgOwXV9t8UATxBG9m9vESe6qfTOSV9-nXgshLYlMfByFWE8-QwtmxMtRTZJznISp-TL6jFv"></script>
         </head>
         <body>
-            <div id="paypal-button-container"></div>
+            <div class="container">
+                <h1>Pay with PayPal</h1>
+                <table>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                    </tr>
+                    ' . $productRows . '
+                </table>
+                <p>Total Amount: $' . $totalAmount . '</p>
+                <div id="paypal-button-container"></div>
+                <p class="note">Note: By clicking the "Pay with PayPal" button, you agree to the <a href="https://developer.paypal.com/docs/checkout/">terms and conditions</a>.</p>
+            </div>
 
             <script>
                 // Render the PayPal button

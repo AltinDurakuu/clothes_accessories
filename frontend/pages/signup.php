@@ -65,7 +65,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if (strlen($address) > $addressMaxLength) {
           $errors[] = 'Address cannot exceed ' . $addressMaxLength . ' characters.';
       }
-  
+  // Check if there are any errors
+if (empty($errors)) {
+  // Validation passed, proceed with further actions (e.g., database operations, redirect)
+  // Prepare the SQL statement to check for duplicate email, username, and phone number
+  $checkStmt = $mysqli->prepare("SELECT * FROM `user` WHERE `email` = ? OR `username` = ? OR `phonenumber` = ?");
+  if (!$checkStmt) {
+      die("Prepare failed: " . $mysqli->error);
+  }
+
+  // Bind the parameters to the statement
+  $checkStmt->bind_param("sss", $email, $username, $phone);
+
+  // Execute the statement
+  $checkStmt->execute();
+
+  // Store the result
+  $checkResult = $checkStmt->get_result();
+
+  // Check if there are any rows with the same email, username, or phone number
+  if ($checkResult->num_rows > 0) {
+      while ($row = $checkResult->fetch_assoc()) {
+          if ($row['email'] === $email) {
+              $errors[] = 'Email already exists.';
+          }
+          if ($row['username'] === $username) {
+              $errors[] = 'Username already exists.';
+          }
+          if ($row['phonenumber'] === $phone) {
+              $errors[] = 'Phone number already exists.';
+          }
+      }
+  }
+
+  // Close the statement and result
+  $checkStmt->close();
+  $checkResult->close();
+}
       // Check if there are any errors
       if (empty($errors)) {
           // Validation passed, proceed with further actions (e.g., database operations, redirect)

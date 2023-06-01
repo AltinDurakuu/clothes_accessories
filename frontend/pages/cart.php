@@ -16,6 +16,33 @@ require_once 'database.php';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./../dist/scss/app.css" />
+    <style>
+      .checkout-button {
+  display: inliblockne-;
+  padding: 10px 20px;
+  background-color: #2b55dd;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.checkout-button:hover {
+  background-color: #152f47;
+}
+
+.checkout-button:active {
+  background-color: #3e8e41;
+  
+}
+
+.form {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+      }
+    </style>
   </head>
 
   <body>
@@ -58,12 +85,12 @@ require_once 'database.php';
     <main class="full-block">
     <section class="products-section products-accessories full-block" id="on-sale">
         <div class="container">
-            <div class="form" id="proceed-to-checkout">
-               <form id="checkout-form" action="checkout.php" method="post">
-                 <input type="hidden" id="product-ids" name="product_ids" value="">
-                 <button type="submit" id="checkout-button">Go to checkout</button>
-                 </form>
-            </div>
+        <div class="form" id="proceed-to-checkout">
+      <form id="checkout-form" action="checkout.php" method="post">
+        <input type="hidden" id="product-ids" name="product_ids" value="">
+      </form>
+      <button type="submit" id="checkout-button" class="checkout-button">Go to checkout</button>
+    </div>
           </div>
 
 

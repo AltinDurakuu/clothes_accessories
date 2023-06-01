@@ -77,13 +77,13 @@
             <div class="clothes-accessories-group">
               <label for="category">Category:</label>
               <label>
-                <input type="checkbox" name="category" value="men"> Men
+                <input type="radio" name="category" value="men"> Men
               </label>
               <label>
-                <input type="checkbox" name="category" value="women"> Women
+                <input type="radio" name="category" value="women"> Women
               </label>
               <label>
-                <input type="checkbox" name="category" value="kids"> Kids
+                <input type="radio" name="category" value="kids"> Kids
               </label>
             </div>
             <div class="clothes-accessories-group">
