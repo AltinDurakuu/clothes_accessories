@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Prepare the SQL statement to retrieve the prices and names based on the product IDs
         $stmt = $conn->prepare("SELECT idproduct, name, price FROM product WHERE idproduct = ?");
         if (!$stmt) {
-            die("Prepare failed: " . $mysqli->error);
+            die("Prepare failed: " . $conn->error . ", SQL: " . "SELECT idproduct, name, price FROM product WHERE idproduct = ?");
         }
 
         // Execute the statement for each product ID
@@ -50,14 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "Error executing query: " . $stmt->error;
             }
         }
-
-        // Close the statement
-        $stmt->close();
     } else {
         echo "No product IDs found.";
     }
-}
 
+    // Close the statement
+    $stmt->close();
+}
 // PayPal Button
 if ($totalAmount > 0) {
     echo '
@@ -127,20 +126,31 @@ if ($totalAmount > 0) {
         <body>
             <div class="container">
                 <h1>Pay with PayPal</h1>
-                <table>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                    </tr>
-                    ' . $productRows . '
-                </table>
-                <p>Total Amount: $' . $totalAmount . '</p>
-                <div id="paypal-button-container"></div>
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" required><br><br>
+                
+                <label for="last_name">Last Name:</label>
+                <input type="text" name="last_name" id="last_name" required><br><br>
+                
+                <label for="address">Address:</label>
+                <input type="text" name="address" id="address" required><br><br>
+                
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" name="phone_number" id="phone_number" required><br><br>
+                    <table>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                        </tr>
+                        ' . $productRows . '
+                    </table>
+                    <p>Total Amount: $' . $totalAmount . '</p>
+                    <div id="paypal-button-container"></div>
                 <p class="note">Note: By clicking the "Pay with PayPal" button, you agree to the <a href="https://developer.paypal.com/docs/checkout/">terms and conditions</a>.</p>
             </div>
 
             <script>
-                // Render the PayPal button
+                // Render the PayPal button only if the form is submitted successfully
                 paypal.Buttons({
                     createOrder: function(data, actions) {
                         // Set up the transaction details

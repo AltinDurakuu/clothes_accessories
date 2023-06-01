@@ -88,8 +88,8 @@ require_once 'database.php';
         <div class="form" id="proceed-to-checkout">
       <form id="checkout-form" action="checkout.php" method="post">
         <input type="hidden" id="product-ids" name="product_ids" value="">
-      </form>
       <button type="submit" id="checkout-button" class="checkout-button">Go to checkout</button>
+      </form>
     </div>
           </div>
 

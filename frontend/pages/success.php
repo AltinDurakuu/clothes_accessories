@@ -1,3 +1,55 @@
+<?php
+session_start();
+
+$servername = "localhost";
+$db_username = "root";
+$db_password = "";
+$dbname = "clothes_accessories";
+
+// Create a connection
+$conn = new mysqli($servername, $db_username, $db_password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Retrieve the form inputs from the session
+$name = $_SESSION['name'];
+$last_name = $_SESSION['last_name'];
+$address = $_SESSION['address'];
+$phone_number = $_SESSION['phone_number'];
+
+// Insert the order data into the database
+$stmt = $conn->prepare("INSERT INTO `orders` (name, last_name, address, phone_number) VALUES (?, ?, ?, ?)");
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error . ", SQL: " . "INSERT INTO `orders` (name, last_name, address, phone_number) VALUES (?, ?, ?, ?)");
+}
+
+// Bind the parameters to the statement
+$stmt->bind_param("ssss", $name, $last_name, $address, $phone_number);
+
+// Execute the statement
+if ($stmt->execute()) {
+    // Order placed successfully
+    $order_id = $stmt->insert_id;
+    $_SESSION['order_id'] = $order_id;
+    echo "Order placed successfully. Order ID: " . $order_id;
+} else {
+    echo "Error inserting order: " . $stmt->error;
+}
+
+// Close the statement
+$stmt->close();
+
+// Clear the session variables
+unset($_SESSION['name']);
+unset($_SESSION['last_name']);
+unset($_SESSION['address']);
+unset($_SESSION['phone_number']);
+
+// You can redirect the user to a confirmation page or perform further actions here
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,9 +106,7 @@
         <p>Thank you for your purchase. Your payment has been successfully processed.</p>
         <p>Order Details:</p>
         <ul>
-            <li>Order ID: <?php echo $_GET['order_id']; ?></li>
-            <li>Payment ID: <?php echo $_GET['payment_id']; ?></li>
-            <li>Amount: $<?php echo $_GET['amount']; ?></li>
+            <li>Order ID: <?php echo $_GET['orders_id']; ?></li>
             <!-- Add any other relevant order details here -->
         </ul>
         <p>For any inquiries or issues regarding your order, please contact our customer support.</p>

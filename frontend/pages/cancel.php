@@ -65,7 +65,7 @@
         <p>If you would like to complete your purchase, please try again.</p>
         <p>If you have any questions or need assistance, please contact our customer support.</p>
         <p class="highlight">Important: Please do not share your payment details with anyone.</p>
-        <a href="checkout.php" class="button">Retry Payment</a>
+        <a href="cart.php" class="button">Retry Payment</a>
     </div>
 </body>
 </html>
